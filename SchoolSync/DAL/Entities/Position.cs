@@ -15,14 +15,15 @@ namespace SchoolSync.DAL.Entities
         public int PositionCode { get; set; }
         [MaxLength(1)]
         [Required]
-        public string PositionName { get; set; }
+        public string PositionName { get; set; } = null!;
         [Required]
         public DateTime CreateDate { get; set; } 
+        [ForeignKey("Division")]
         [Required]
-        public int DivisionId { get; set; }
+        public int DivisionCode { get; set; }
         public Division Division { get; set; }
         [MaxLength(1)]
         [Required]
-        public string IsUsed { get; set; }
+        public string IsUsed { get; set; } = null!;
     }
 }

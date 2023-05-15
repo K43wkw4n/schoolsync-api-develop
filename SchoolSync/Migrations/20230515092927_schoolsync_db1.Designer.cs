@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SchoolSync.DAL.EFCore;
 
@@ -10,9 +11,11 @@ using SchoolSync.DAL.EFCore;
 namespace SchoolSync.Migrations
 {
     [DbContext(typeof(SchoolSyncDbContext))]
-    partial class SchoolSyncDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230515092927_schoolsync_db1")]
+    partial class schoolsync_db1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
