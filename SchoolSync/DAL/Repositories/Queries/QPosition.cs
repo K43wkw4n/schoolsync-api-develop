@@ -1,28 +1,40 @@
 using Microsoft.EntityFrameworkCore;
 using SchoolSync.DAL.EFCore;
 using SchoolSync.DAL.Entities;
-using SchoolSync.DAL.Repositories.Interfaces; 
+using SchoolSync.DAL.Repositories.Interfaces;
 
 namespace SchoolSync.DAL.Repositories.Queries
 {
-    public class QDivision : IDivision
+    public class QPosition : IPosition
     {
-        private readonly SchoolSyncDbContext db;
-        public QDivision(SchoolSyncDbContext dbContext)
+        private readonly SchoolSyncDbContext _context;
+        public QPosition(SchoolSyncDbContext context)
         {
-            db = dbContext;
+            _context = context;
         }
 
-        public async Task<string> CreateDivisionAsync(Division division)
+        public async Task<string> CreatePositionAsync(Position position)
         {
-            await db.Division.AddAsync(division);
-            await db.SaveChangesAsync();
+            var division = _context.Division.FindAsync(position.DivisionCode);
+
+            if(division == null) return "Your DivisionCode is not exist";
+
+            var positions = new Position()
+            {
+                PositionName = position.PositionName, 
+                CreateDate = DateTime.Now,
+                DivisionCode = position.DivisionCode,
+                IsUsed = position.IsUsed,
+            };
+            
+            await _context.Position.AddAsync(positions);
+            await _context.SaveChangesAsync();
             return "เพิ่มข้อมูลเรียบร้อยแล้ว";
         }
 
         public async Task<ResponsePagination> FetchAll(int pageSize, int currentPage)
         {
-            var query = await db.Division.ToListAsync();
+            var query = await _context.Position.Include(x=>x.Division).ToListAsync();
 
             int totalRow = 0;
             totalRow = query.Count;
@@ -42,16 +54,15 @@ namespace SchoolSync.DAL.Repositories.Queries
                     }, 
                     Data = value 
             };
-
         }
 
         //ลบข้อมูล
         public async Task<bool> DeleteData(string id)
         {
-            var query = db.Division.FirstOrDefault(x => x.DivisionCode == id);
+            var query = _context.Position.FirstOrDefault(x => x.PositionCode == id);
             query.IsUsed = query.IsUsed == "1" ? "0" : "1";
-            db.Entry(query).State = EntityState.Modified;
-            int save = await db.SaveChangesAsync();
+            _context.Entry(query).State = EntityState.Modified;
+            int save = await _context.SaveChangesAsync();
             if (save > 0)
             {
                 return true;
@@ -59,5 +70,5 @@ namespace SchoolSync.DAL.Repositories.Queries
                 return false;
             }
         }
-	}
+    }
 }

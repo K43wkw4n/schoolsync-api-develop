@@ -2,9 +2,9 @@ using SchoolSync.DAL.Entities;
 
 namespace SchoolSync.DAL.Repositories.Interfaces
 {
-    public interface IDivision
+    public interface IPosition
     {
-        Task<string> CreateDivisionAsync(Division division);
+        Task<string> CreatePositionAsync(Position position);
         Task<ResponsePagination> FetchAll(int pageSize, int currentPage);
         Task<bool> DeleteData(string id); 
     }

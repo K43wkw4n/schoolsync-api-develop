@@ -29,8 +29,7 @@ namespace SchoolSync.Controllers
         public async Task<IActionResult> FetchAll(int pageSize = 10, int currentPage = 1)
         {
             var response = await _division.FetchAll(pageSize, currentPage);
-            var result = await _context.Position.Include(x=>x.Division).ToListAsync();
-            return Ok(result);
-        } 
+            return Ok(response);
+        }
     }
 }

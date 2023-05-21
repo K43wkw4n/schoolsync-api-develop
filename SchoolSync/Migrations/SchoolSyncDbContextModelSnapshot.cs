@@ -21,10 +21,10 @@ namespace SchoolSync.Migrations
 
             modelBuilder.Entity("SchoolSync.DAL.Entities.Division", b =>
                 {
-                    b.Property<int>("DivisionCode")
+                    b.Property<string>("DivisionCode")
                         .ValueGeneratedOnAdd()
                         .HasMaxLength(2)
-                        .HasColumnType("int");
+                        .HasColumnType("varchar(2)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime");
@@ -46,16 +46,17 @@ namespace SchoolSync.Migrations
 
             modelBuilder.Entity("SchoolSync.DAL.Entities.Position", b =>
                 {
-                    b.Property<int>("PositionCode")
+                    b.Property<string>("PositionCode")
                         .ValueGeneratedOnAdd()
                         .HasMaxLength(2)
-                        .HasColumnType("int");
+                        .HasColumnType("varchar(2)");
 
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime");
 
-                    b.Property<int>("DivisionCode")
-                        .HasColumnType("int");
+                    b.Property<string>("DivisionCode")
+                        .IsRequired()
+                        .HasColumnType("varchar(2)");
 
                     b.Property<string>("IsUsed")
                         .IsRequired()

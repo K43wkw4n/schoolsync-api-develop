@@ -28,6 +28,7 @@ namespace SchoolSync.Extension
 
         public static void ConfigureServices(this IServiceCollection services){
             services.AddScoped<IDivision,QDivision>();
+            services.AddScoped<IPosition,QPosition>();
         }
 
 	}
