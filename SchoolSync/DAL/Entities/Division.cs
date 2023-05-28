@@ -7,7 +7,7 @@ public class Division
 	[Key]
 	[DatabaseGenerated(DatabaseGeneratedOption.Identity)] //auto key
 	[MaxLength(2)]
-	public string DivisionCode {get; set;}
+	public int DivisionCode {get; set;}
 	[MaxLength(80)]
 	[Required]
 	public string DivisionName {get; set;} = null!;

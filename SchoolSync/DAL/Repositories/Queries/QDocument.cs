@@ -6,32 +6,26 @@ using SchoolSync.DAL.Repositories.Interfaces;
 
 namespace SchoolSync.DAL.Repositories.Queries
 {
-    public class QDivision : IDivision
+    public class QDocument : IDocument
     {
         private readonly SchoolSyncDbContext _context;
-        public QDivision(SchoolSyncDbContext dbContext)
+        public QDocument(SchoolSyncDbContext context)
         {
-            _context = dbContext;
+            _context = context; 
         }
-
-        public async Task<string> CreateDivisionAsync(Division division)
+        
+        public async Task<string> CreateDocumentAsync(Documents document)
         {
-            await _context.Divisions.AddAsync(division);
+            await _context.Documents.AddAsync(document);
             await _context.SaveChangesAsync();
             return "เพิ่มข้อมูลเรียบร้อยแล้ว";
         }
-
+  
         public async Task<ResponsePagination> FetchAll(int pageSize, int currentPage)
         {
-            var query = await _context.Divisions.ToListAsync<dynamic>();
+            var query = await _context.Documents.ToListAsync<dynamic>();
 
             Pagination pagination = new Pagination(query, currentPage, pageSize);
-
-            // int totalRow = 0;
-            // totalRow = query.Count;
-            // var totalPage = (double)totalRow / pageSize;
-            // var value = query.Skip((currentPage - 1) * pageSize).Take(pageSize).ToList();
-            // totalPage = (int)Math.Ceiling(totalPage);
 
             return new ResponsePagination
             {
@@ -49,19 +43,16 @@ namespace SchoolSync.DAL.Repositories.Queries
             };
         }
 
-        //ลบข้อมูล
-        public async Task<bool> DeleteData(int id)
+        public async Task<bool> DeleteData(int code)
         {
-            var query = _context.Divisions.FirstOrDefault(x => x.DivisionCode == id);
+            var query = _context.Documents.FirstOrDefault(x => x.Code == code);
             query.IsUsed = query.IsUsed == "1" ? "0" : "1";
             _context.Entry(query).State = EntityState.Modified;
             int save = await _context.SaveChangesAsync();
             if (save > 0)
             {
                 return true;
-            }
-            else
-            {
+            }else{
                 return false;
             }
         }

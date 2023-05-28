@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SchoolSync.DAL.EFCore;
 using SchoolSync.DAL.Entities;
@@ -6,33 +10,27 @@ using SchoolSync.DAL.Repositories.Interfaces;
 
 namespace SchoolSync.DAL.Repositories.Queries
 {
-    public class QDivision : IDivision
+    public class QEmployees : IEmployees
     {
         private readonly SchoolSyncDbContext _context;
-        public QDivision(SchoolSyncDbContext dbContext)
+        public QEmployees(SchoolSyncDbContext context)
         {
-            _context = dbContext;
+            _context = context;
         }
 
-        public async Task<string> CreateDivisionAsync(Division division)
+        public async Task<string> CreateEmployeeAsync(Employees employees)
         {
-            await _context.Divisions.AddAsync(division);
+            await _context.Employees.AddAsync(employees);
             await _context.SaveChangesAsync();
             return "เพิ่มข้อมูลเรียบร้อยแล้ว";
         }
 
         public async Task<ResponsePagination> FetchAll(int pageSize, int currentPage)
         {
-            var query = await _context.Divisions.ToListAsync<dynamic>();
+            var query = await _context.Employees.ToListAsync<dynamic>();
 
             Pagination pagination = new Pagination(query, currentPage, pageSize);
-
-            // int totalRow = 0;
-            // totalRow = query.Count;
-            // var totalPage = (double)totalRow / pageSize;
-            // var value = query.Skip((currentPage - 1) * pageSize).Take(pageSize).ToList();
-            // totalPage = (int)Math.Ceiling(totalPage);
-
+ 
             return new ResponsePagination
             {
                 StatusCode = 200,
@@ -49,10 +47,9 @@ namespace SchoolSync.DAL.Repositories.Queries
             };
         }
 
-        //ลบข้อมูล
-        public async Task<bool> DeleteData(int id)
+        public async Task<bool> DeleteData(int code)
         {
-            var query = _context.Divisions.FirstOrDefault(x => x.DivisionCode == id);
+            var query = _context.Employees.FirstOrDefault(x => x.EmpCode == code);
             query.IsUsed = query.IsUsed == "1" ? "0" : "1";
             _context.Entry(query).State = EntityState.Modified;
             int save = await _context.SaveChangesAsync();
@@ -65,5 +62,6 @@ namespace SchoolSync.DAL.Repositories.Queries
                 return false;
             }
         }
+
     }
 }

@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using SchoolSync.DAL.EFCore;
 using SchoolSync.DAL.Entities;
+using SchoolSync.DAL.Helper;
 using SchoolSync.DAL.Repositories.Interfaces;
 
 namespace SchoolSync.DAL.Repositories.Queries
@@ -15,7 +16,7 @@ namespace SchoolSync.DAL.Repositories.Queries
 
         public async Task<string> CreatePositionAsync(Position position)
         {
-            var division = _context.Division.FindAsync(position.DivisionCode);
+            var division = _context.Divisions.FindAsync(position.DivisionCode);
 
             if(division == null) return "Your DivisionCode is not exist";
 
@@ -27,39 +28,37 @@ namespace SchoolSync.DAL.Repositories.Queries
                 IsUsed = position.IsUsed,
             };
             
-            await _context.Position.AddAsync(positions);
+            await _context.Positions.AddAsync(positions);
             await _context.SaveChangesAsync();
             return "เพิ่มข้อมูลเรียบร้อยแล้ว";
         }
 
         public async Task<ResponsePagination> FetchAll(int pageSize, int currentPage)
         {
-            var query = await _context.Position.Include(x=>x.Division).ToListAsync();
+            var query = await _context.Positions.ToListAsync<dynamic>();
 
-            int totalRow = 0;
-            totalRow = query.Count;
-            var totalPage = (double)totalRow / pageSize;
-            var value = query.Skip((currentPage - 1) * pageSize).Take(pageSize).ToList();
-            totalPage = (int)Math.Ceiling(totalPage);
-
-            return new ResponsePagination { 
-                StatusCode = 200, 
-                TaskStatus = true, 
-                Message = "สำเร็จ", 
-                Pagin = new { 
-                        CurrentPage = currentPage, 
-                        PageSize = pageSize, 
-                        TotalRows = totalRow, 
-                        TotalPages = totalPage 
-                    }, 
-                    Data = value 
+            Pagination pagination = new Pagination(query, currentPage, pageSize);
+ 
+            return new ResponsePagination
+            {
+                StatusCode = 200,
+                TaskStatus = true,
+                Message = "สำเร็จ",
+                Pagin = new
+                {
+                    CurrentPage = currentPage,
+                    PageSize = pageSize,
+                    TotalRows = pagination.TotalRow,
+                    TotalPages = pagination.TotalPage
+                },
+                Data = pagination.Data
             };
         }
 
         //ลบข้อมูล
         public async Task<bool> DeleteData(string id)
         {
-            var query = _context.Position.FirstOrDefault(x => x.PositionCode == id);
+            var query = _context.Positions.FirstOrDefault(x => x.PositionCode == id);
             query.IsUsed = query.IsUsed == "1" ? "0" : "1";
             _context.Entry(query).State = EntityState.Modified;
             int save = await _context.SaveChangesAsync();
