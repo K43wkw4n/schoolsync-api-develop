@@ -21,6 +21,12 @@ namespace SchoolSync.DAL.Repositories.Queries
             return "เพิ่มข้อมูลเรียบร้อยแล้ว";
         }
 
+        public async Task<Division> GetDivisionByID(int DivisionCode)
+        {
+            var query = await _context.Divisions.FirstOrDefaultAsync(x=>x.DivisionCode == DivisionCode);
+            return query;
+        }
+
         public async Task<ResponsePagination> FetchAll(int pageSize, int currentPage)
         {
             var query = await _context.Divisions.ToListAsync<dynamic>();
@@ -53,7 +59,7 @@ namespace SchoolSync.DAL.Repositories.Queries
         public async Task<bool> DeleteData(int id)
         {
             var query = _context.Divisions.FirstOrDefault(x => x.DivisionCode == id);
-            query.IsUsed = query.IsUsed == "1" ? "0" : "1";
+            query.IsUsed = query.IsUsed == true ? false : true;
             _context.Entry(query).State = EntityState.Modified;
             int save = await _context.SaveChangesAsync();
             if (save > 0)
@@ -65,5 +71,40 @@ namespace SchoolSync.DAL.Repositories.Queries
                 return false;
             }
         }
+
+        public async Task<bool> DeleteDataAsync(int divisionCode)
+        {
+            var result = await _context.Divisions.FirstOrDefaultAsync(x=>x.DivisionCode == divisionCode);
+            
+            if(result != null)
+            {
+                _context.Divisions.Remove(result);
+                await _context.SaveChangesAsync();
+                return true;
+            } else
+            {
+                return false;
+            }
+        }
+
+        public async Task<Division> UpdateData(int divisionCode, Division division)
+        {
+            var result = await _context.Divisions.FirstOrDefaultAsync(x=>x.DivisionCode == divisionCode);
+
+            if(result != null)
+            {
+                result.DivisionName = division.DivisionName;
+                result.CreatedDate = division.CreatedDate;
+                result.IsUsed = division.IsUsed;
+
+                _context.Entry(result).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+                return result;
+            } else
+            {
+                return null;
+            } 
+        }
+        
     }
 }

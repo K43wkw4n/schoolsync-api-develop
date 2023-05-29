@@ -17,7 +17,5 @@ namespace SchoolSync.DAL.Entities
         public int? DocumentTypeCode { get; set; }
         // public DateTime CreatedDate { get; set; }
         // public string IsUsed { get; set; } = null!;
-
-
     }
 }

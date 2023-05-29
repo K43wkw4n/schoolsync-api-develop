@@ -12,13 +12,11 @@ namespace SchoolSync.Controllers
     [ApiController]
     [Route("api/[controller]")]
     public class EmployeeController : ControllerBase
-    {
-        private readonly SchoolSyncDbContext _context;
+    { 
         private readonly IEmployees _employees;
-        public EmployeeController(IEmployees employees, SchoolSyncDbContext context)
+        public EmployeeController(IEmployees employees)
         {
-            _employees = employees;
-            _context = context;
+            _employees = employees; 
         }
 
         [HttpPost("create-employee")]

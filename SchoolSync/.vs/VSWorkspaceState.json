@@ -1,0 +1,13 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\Controllers",
+    "\\DAL",
+    "\\DAL\\Entities",
+    "\\DAL\\Repositories",
+    "\\DAL\\Repositories\\Interfaces",
+    "\\DAL\\Repositories\\Queries"
+  ],
+  "SelectedNode": "\\Controllers\\DivisionController.cs",
+  "PreviewInSolutionExplorer": false
+}
