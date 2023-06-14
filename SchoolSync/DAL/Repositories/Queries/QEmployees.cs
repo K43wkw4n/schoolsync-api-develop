@@ -13,6 +13,7 @@ namespace SchoolSync.DAL.Repositories.Queries
     public class QEmployees : IEmployees
     {
         private readonly SchoolSyncDbContext _context;
+
         public QEmployees(SchoolSyncDbContext context)
         {
             _context = context;
@@ -25,12 +26,18 @@ namespace SchoolSync.DAL.Repositories.Queries
             return "เพิ่มข้อมูลเรียบร้อยแล้ว";
         }
 
+        public async Task<Employees> GetEmployeeByID(int code) 
+        {
+            var query = await _context.Employees.FirstOrDefaultAsync(x => x.EmpCode == code);
+            return query; 
+        }
+
         public async Task<ResponsePagination> FetchAll(int pageSize, int currentPage)
         {
             var query = await _context.Employees.ToListAsync<dynamic>();
 
             Pagination pagination = new Pagination(query, currentPage, pageSize);
- 
+
             return new ResponsePagination
             {
                 StatusCode = 200,
@@ -49,12 +56,12 @@ namespace SchoolSync.DAL.Repositories.Queries
 
         public async Task<bool> DeleteData(int code)
         {
-            var query = _context.Employees.FirstOrDefault(x => x.EmpCode == code);
-            query.IsUsed = query.IsUsed == "1" ? "0" : "1";
-            _context.Entry(query).State = EntityState.Modified;
-            int save = await _context.SaveChangesAsync();
-            if (save > 0)
+            var result = await _context.Employees.FirstOrDefaultAsync(x => x.EmpCode == code);
+
+            if (result != null)
             {
+                _context.Employees.Remove(result);
+                await _context.SaveChangesAsync();
                 return true;
             }
             else
@@ -62,6 +69,39 @@ namespace SchoolSync.DAL.Repositories.Queries
                 return false;
             }
         }
+
+        public async Task<Employees> UpdateData(int code, Employees employees)
+        {
+            var result = await _context.Employees.FirstOrDefaultAsync(x => x.EmpCode == code);
+
+            if (result != null)
+            {
+                result.InitialCode = employees.InitialCode;
+                result.Firstname = employees.Firstname;
+                result.Lastname = employees.Lastname;
+                result.MobilePhone = employees.MobilePhone;
+                result.Email = employees.Email;
+                result.Address = employees.Address;
+                result.Subdistrict = employees.Subdistrict;
+                result.District = employees.District;
+                result.Province = employees.Province;
+                result.Postcode = employees.Postcode;
+                result.Username = employees.Username;
+                result.Password = employees.Password;
+                result.CreatedDate = employees.CreatedDate;
+                result.IsUsed = employees.IsUsed;
+                result.DivisionCode = employees.DivisionCode;
+
+                _context.Entry(result).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+                return result;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
 
     }
 }
