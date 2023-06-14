@@ -67,7 +67,7 @@ namespace SchoolSync.DAL.Repositories.Queries
             else
             {
                 return false;
-            }
+            } 
         }
 
         public async Task<Employees> UpdateData(int code, Employees employees)
